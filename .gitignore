@@ -216,3 +216,21 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local environment and credentials
+.venv/
+.DS_Store
+.env
+.env.*
+*.pem
+*.key
+
+# Terraform working files, state, and plans
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
