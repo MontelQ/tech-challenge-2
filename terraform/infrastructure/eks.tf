@@ -61,7 +61,6 @@ module "eks" {
     }
   }
 
-  depends_on = [module.vpc]
 }
 
 output "cluster_name" {
