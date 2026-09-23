@@ -1,0 +1,17 @@
+clusterName: tech-challenge-2
+region: us-east-1
+vpcId: vpc-0374174d79e265039
+
+replicaCount: 2
+
+serviceAccount:
+  create: true
+  name: aws-load-balancer-controller
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::394228349360:role/tech-challenge-2-load-balancer-controller
+
+featureGates:
+  ALBGatewayAPI: false
+  NLBGatewayAPI: false
+  GatewayListenerSet: false
+  
