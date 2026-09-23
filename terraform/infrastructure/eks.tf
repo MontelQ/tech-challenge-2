@@ -44,6 +44,10 @@ module "eks" {
 
     kube-proxy = {}
     coredns    = {}
+
+    metrics-server = {
+      most_recent = false
+    }
   }
 
   eks_managed_node_groups = {
