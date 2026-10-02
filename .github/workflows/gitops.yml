@@ -1,0 +1,52 @@
+name: GitOps image build
+
+on:
+  push:
+    branches: [gitops]
+    paths:
+      - Dockerfile
+      - app.py
+      - requirements.txt
+      - .github/workflows/gitops.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1
+      ECR_REGISTRY: 394228349360.dkr.ecr.us-east-1.amazonaws.com
+      ECR_REPOSITORY: tech-challenge-2
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Assume AWS role
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::394228349360:role/tech-challenge-2-github-actions-ecr
+          aws-region: us-east-1
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        run: |
+          IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+
+      - name: Record image tag for Argo CD
+        run: |
+          test "$(grep -c '^  tag: ' helm/flask-app/values.yaml)" -eq 1
+          sed -i "s/^  tag: .*/  tag: \"$GITHUB_SHA\"/" helm/flask-app/values.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add helm/flask-app/values.yaml
+          git commit -m "chore(gitops): deploy image $GITHUB_SHA"
+          git push origin HEAD:gitops
