@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: 394228349360.dkr.ecr.us-east-1.amazonaws.com/tech-challenge-2
-  tag: "manual-f2a0172bf017"
+  tag: "16af7c50d2d5a6a606a72aa64327d26b68a30fb3"
   pullPolicy: IfNotPresent
 
 service:
