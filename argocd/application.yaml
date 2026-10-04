@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tc2-gitops
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:MontelQ/tech-challenge-2.git
+    targetRevision: gitops
+    path: helm/flask-app
+    helm:
+      releaseName: tc2-gitops
+      parameters:
+        - name: ingress.enabled
+          value: "false"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tech-challenge-2-gitops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
